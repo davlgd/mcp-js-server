@@ -74,17 +74,17 @@ Then create a server instance with the following code:
 
 ```javascript
 // server.js
+import { MCP } from 'mcp-server';
 import { tools } from './tools.js';
 import { prompts } from './prompts.js';
 import { resources } from './resources.js';
-import { mcp } from '../mcp-server/server.js';
 
 const infos = {
     name: 'mcp-demo-server',
     version: '0.1.0'
 };
 
-const server = new mcp(infos, prompts, resources, tools);
+const server = new MCP(infos, prompts, resources, tools);
 ```
 
 ### Debugging
