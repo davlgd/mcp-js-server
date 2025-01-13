@@ -1,0 +1,10 @@
+{
+  "name": "mcp-js-server",
+  "author":  "davlgd",
+  "license": "Apache-2.0",
+  "keywords": [ "javascript", "mcp", "server", "stdio" ],
+  "description": "",
+  "version": "0.1.2",
+  "main": "server.js",
+  "type": "module"
+}
