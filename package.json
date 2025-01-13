@@ -2,6 +2,7 @@
   "name": "mcp-js-server",
   "author":  "davlgd",
   "license": "Apache-2.0",
+  "repository": "github:davlgd/mcp-js-server",
   "keywords": [ "javascript", "mcp", "server", "stdio" ],
   "description": "",
   "version": "0.1.2",
