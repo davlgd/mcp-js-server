@@ -1,6 +1,15 @@
 # MCP Server - JavaScript SDK
+[![smithery badge](https://smithery.ai/badge/mcp-js-server)](https://smithery.ai/server/mcp-js-server)
 
 This is an unofficial JavaScript SDK for [Model Context Protocol](https://spec.modelcontextprotocol.io/latest).
+
+### Installing via Smithery
+
+To install mcp-js-server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/mcp-js-server):
+
+```bash
+npx -y @smithery/cli install mcp-js-server --client claude
+```
 
 ## Usage
 
