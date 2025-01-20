@@ -1,10 +1,10 @@
 import { join } from 'path';
 import { platform, homedir } from 'os';
-import { getPackageName, MAX_LOG_LINES } from './constants.js';
+import { MAX_LOG_LINES } from './constants.js';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 
 async function getSystemLogPath() {
-    const appName = await getPackageName();
+    const appName = "mcp-js-server";
 
     switch (platform()) {
         case 'linux':

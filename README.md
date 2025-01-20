@@ -4,6 +4,12 @@ This is an unofficial JavaScript SDK for [Model Context Protocol](https://spec.m
 
 ## Usage
 
+Import the package to your project:
+
+```bash
+npm install mcp-js-server
+```
+
 Create files to define the server's prompts, resources, and tools.
 
 ### Prompts
