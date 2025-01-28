@@ -1,4 +1,5 @@
 # MCP Server - JavaScript SDK
+[![smithery badge](https://smithery.ai/badge/mcp-js-server)](https://smithery.ai/server/mcp-js-server)
 
 This is an unofficial JavaScript SDK for [Model Context Protocol](https://spec.modelcontextprotocol.io/latest).
 
