@@ -3,9 +3,11 @@ export const ResponseFormats = {
         protocolVersion: version,
         serverInfo: info,
         capabilities: {
+            tools: { listChanged: false },
+            resources: { listChanged: false, subscribe: false },
+            prompts: { listChanged: false },
             sampling: {},
-            roots: { listChanged: true },
-            prompts: { listChanged: false }
+            roots: { listChanged: true }
         }
     }),
 
@@ -45,7 +47,8 @@ export const ResponseFormats = {
             resources: resources.map(([name, resource]) => ({
                 name,
                 uri: resource.uri,
-                MimeType: resource.mimeType
+                mimeType: resource.mimeType,
+                description: resource.description
             }))
         }),
         read: (resource) => ({
