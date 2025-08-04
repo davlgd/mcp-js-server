@@ -47,17 +47,19 @@ export class MCP {
     }
 
     async processRequest(line) {
+        let requestId = null;
         try {
             const request = JSON.parse(line);
+            requestId = request.id;
             await logRPC('request', request);
 
             const response = await this.handleMethod(request);
-            if (request.id !== undefined) {
+            if (response !== null && request.id !== undefined) {
                 await logRPC('response', response);
                 process.stdout.write(JSON.stringify(response) + '\n');
             }
         } catch (error) {
-            const errorResponse = this.createErrorResponse(null, RPC_ERROR_CODES.PARSE_ERROR, 'Parse error', error.message);
+            const errorResponse = this.createErrorResponse(requestId, RPC_ERROR_CODES.PARSE_ERROR, 'Parse error', error.message);
             await logRPC('error', errorResponse);
             process.stdout.write(JSON.stringify(errorResponse) + '\n');
         }
@@ -66,28 +68,39 @@ export class MCP {
     async handleMethod(request) {
         const { method, params, id } = request;
 
-        const methodHandlers = {
-            initialize: () => this.handleInitialize(params),
-            shutdown: () => this.handleShutdown(),
-            exit: () => this.handleExit(),
-            'tools/list': () => this.handleToolsList(),
-            'tools/call': () => this.handleToolsCall(params),
-            'notifications/cancelled': () => this.handleNotificationsCancelled(),
-            'notifications/initialized': () => this.handleNotificationsInitialized(),
-            'ping': () => this.handlePing(),
-            'prompts/list': () => this.handlePromptsList(),
-            'prompts/get': () => this.handlePromptsGet(params),
-            'resources/list': () => this.handleResourcesList(),
-            'resources/read': () => this.handleResourcesRead(params),
-            'resources/templates/list': () => this.handleResourcesTemplatesList()
-        };
+        try {
+            const methodHandlers = {
+                initialize: () => this.handleInitialize(params),
+                shutdown: () => this.handleShutdown(),
+                exit: () => this.handleExit(),
+                'tools/list': () => this.handleToolsList(),
+                'tools/call': () => this.handleToolsCall(params),
+                'notifications/cancelled': () => this.handleNotificationsCancelled(),
+                'notifications/initialized': () => this.handleNotificationsInitialized(),
+                'ping': () => this.handlePing(),
+                'prompts/list': () => this.handlePromptsList(),
+                'prompts/get': () => this.handlePromptsGet(params),
+                'resources/list': () => this.handleResourcesList(),
+                'resources/read': () => this.handleResourcesRead(params),
+                'resources/templates/list': () => this.handleResourcesTemplatesList()
+            };
 
-        const handler = methodHandlers[method];
-        if (!handler) {
-            return this.createErrorResponse(id, RPC_ERROR_CODES.METHOD_NOT_FOUND, 'Method not found');
+            const handler = methodHandlers[method];
+            if (!handler) {
+                return this.createErrorResponse(id, RPC_ERROR_CODES.METHOD_NOT_FOUND, 'Method not found');
+            }
+
+            const result = await handler();
+
+            // Notifications don't have an id and should not return a response
+            if (id === undefined) {
+                return null;
+            }
+
+            return this.createResponse(id, result);
+        } catch (error) {
+            return this.createErrorResponse(id, RPC_ERROR_CODES.INTERNAL_ERROR || -32603, error.message, error.stack);
         }
-
-        return this.createResponse(id, await handler());
     }
 
     handlePing() {
@@ -159,13 +172,13 @@ export class MCP {
     }
 
     handleInitialize(params) {
-        if (params?.protocolVersion !== PROTOCOL_VERSION) {
-            throw new Error('Protocol version not supported');
-        }
         this.isConnected = true;
         process.stdin.resume();
 
-        return ResponseFormats.initialize(PROTOCOL_VERSION, this.infos);
+        // Use the version requested by the client or the default version
+        const negotiatedVersion = params?.protocolVersion || PROTOCOL_VERSION;
+
+        return ResponseFormats.initialize(negotiatedVersion, this.infos);
     }
 
     async handleTermination() {
