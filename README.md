@@ -10,7 +10,7 @@ Import the package to your project:
 npm install mcp-js-server
 ```
 
-Create files to define the server's prompts, resources, and tools.
+Create files to define the server's prompts, resources, and tools. See [mcp-clever-demo](https://github.com/davlgd/mcp-clever-demo), or the examples below:
 
 ### Prompts
 
